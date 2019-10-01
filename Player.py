@@ -1,8 +1,9 @@
 from typing import List
+import random
 
 
 class Fielding:
-    def __init__(self, agility: 'int', catching: 'int'):
+    def __init__(self, agility: 'int' = 1, catching: 'int' = 1):
         self.__agility = agility
         self.__catching = catching
 
@@ -14,9 +15,12 @@ class Fielding:
 
 
 class Batting:
-    def __init__(self, hand: 'str', ability: 'List[int]'):
+    def __init__(self, hand: 'str' = "R", ability: 'List[int]' = None):
         self.__hand = hand
-        self.__ability = ability
+        if ability is None:
+            self.__ability = [1, 1]
+        else:
+            self.__ability = ability  # [4, 3] where 4 for pace and 3 for spin
 
     def get_hand(self):
         return self.__hand
@@ -26,10 +30,13 @@ class Batting:
 
 
 class Bowling:
-    def __init__(self, hand: 'str', bowl_type: 'str', ability: 'List[int]'):
+    def __init__(self, hand: 'str' = "R", bowl_type: 'str' = "Pace", ability: 'List[int]' = None):
+        if ability is None:
+            self.__ability = [1, 2]
+        else:
+            self.__ability = ability
         self.__hand = hand
         self.__bowl_type = bowl_type
-        self.__ability = ability
 
     def get_ability(self):
         return self.__ability
@@ -41,8 +48,12 @@ class Bowling:
         return self.__bowl_type
 
 
+def default_name():
+    return str(random.randint(100000, 1000000))
+
+
 class Personal:
-    def __init__(self, name: 'str', xp: 'int', age: 'int', fitness: 'int' = 25):
+    def __init__(self, name: 'str' = default_name(), xp: 'int' = 0, age: 'int' = 18, fitness: 'int' = 25):
         self.__name = name
         self.__xp = xp
         self.__age = age
@@ -62,7 +73,7 @@ class Personal:
 
 
 class Player:
-    def __init__(self, personal: 'Personal', batting: 'Batting', bowling: 'Bowling', fielding: 'Fielding'):
+    def __init__(self, personal=Personal(), batting=Batting(), bowling=Bowling(), fielding=Fielding()):
         self.__personal = personal
         self.__batting = batting
         self.__bowling = bowling
@@ -82,6 +93,5 @@ class Player:
 
 
 if __name__ == '__main__':
-    player1 = Player(Personal("Shrey Pithava", 5, 24), Batting("R", [7, 8]), Bowling("R", "F", [7, 6, 5, 3]),
-                     Fielding(1, 2))
-    print(player1.get_batting().get_hand())
+    player1 = Player()
+    print(player1.get_personal().get_name())
