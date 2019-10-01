@@ -2,7 +2,7 @@ from typing import List
 import random
 
 
-class Fielding:
+class Fielding(object):
     def __init__(self, agility: 'int' = 1, catching: 'int' = 1):
         self.__agility = agility
         self.__catching = catching
@@ -14,7 +14,7 @@ class Fielding:
         return self.__agility
 
 
-class Batting:
+class Batting(object):
     def __init__(self, hand: 'str' = "R", ability: 'List[int]' = None):
         self.__hand = hand
         if ability is None:
@@ -29,7 +29,7 @@ class Batting:
         return self.__ability
 
 
-class Bowling:
+class Bowling(object):
     def __init__(self, hand: 'str' = "R", bowl_type: 'str' = "Pace", ability: 'List[int]' = None):
         if ability is None:
             self.__ability = [1, 2]
@@ -49,11 +49,12 @@ class Bowling:
 
 
 def default_name():
-    return str(random.randint(100000, 1000000))
+    return str(random.randint(100000, 1000000))  # fix this static function....gives same random everytime
 
 
-class Personal:
-    def __init__(self, name: 'str' = default_name(), xp: 'int' = 0, age: 'int' = 18, fitness: 'int' = 25):
+class Personal(object):
+    def __init__(self, name: 'str' = str(random.randint(100000, 1000000)), xp: 'int' = 0, age: 'int' = 18,
+                 fitness: 'int' = 25):
         self.__name = name
         self.__xp = xp
         self.__age = age
@@ -72,7 +73,7 @@ class Personal:
         return self.__fitness
 
 
-class Player:
+class Player(object):
     def __init__(self, personal=Personal(), batting=Batting(), bowling=Bowling(), fielding=Fielding()):
         self.__personal = personal
         self.__batting = batting
@@ -90,8 +91,3 @@ class Player:
 
     def get_fielding(self):
         return self.__fielding
-
-
-if __name__ == '__main__':
-    player1 = Player()
-    print(player1.get_personal().get_name())
