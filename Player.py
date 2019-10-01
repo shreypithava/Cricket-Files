@@ -1,5 +1,4 @@
 from typing import List
-import random
 
 
 class Fielding(object):
@@ -48,13 +47,8 @@ class Bowling(object):
         return self.__bowl_type
 
 
-def default_name():
-    return str(random.randint(100000, 1000000))  # fix this static function....gives same random everytime
-
-
 class Personal(object):
-    def __init__(self, name: 'str' = str(random.randint(100000, 1000000)), xp: 'int' = 0, age: 'int' = 18,
-                 fitness: 'int' = 25):
+    def __init__(self, name: 'str' = "", xp: 'int' = 0, age: 'int' = 18, fitness: 'int' = 25):
         self.__name = name
         self.__xp = xp
         self.__age = age
