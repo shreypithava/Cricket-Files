@@ -1,5 +1,5 @@
 import random
-import Player
+import player
 
 
 class Engine(object):
@@ -14,8 +14,8 @@ class Engine(object):
 if __name__ == '__main__':
     engine = Engine()
     for _ in range(22):
-        engine.blue_team.append(Player.Player(personal=Player.Personal(name=str(random.randint(10000, 100000)))))
-        engine.red_team.append(Player.Player(personal=Player.Personal(name=str(random.randint(10000, 100000)))))
+        engine.blue_team.append(player.Player(personal=player.Personal(name=str(random.randint(10000, 100000)))))
+        engine.red_team.append(player.Player(personal=player.Personal(name=str(random.randint(10000, 100000)))))
 
     for player in engine.red_team + engine.blue_team:
         print(player.get_personal().get_name())
