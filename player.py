@@ -66,6 +66,8 @@ class Personal(object):
     def get_fitness(self):
         return self.__fitness
 
+    # think about career statistics
+
 
 class Player(object):
     def __init__(self, personal=Personal(), batting=Batting(), bowling=Bowling(), fielding=Fielding()):
