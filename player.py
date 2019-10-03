@@ -16,10 +16,7 @@ class Fielding(object):
 class Batting(object):
     def __init__(self, hand: 'str' = "R", ability: 'List[int]' = None):
         self.__hand = hand
-        if ability is None:
-            self.__ability = [1, 1]
-        else:
-            self.__ability = ability  # [4, 3] where 4 for pace and 3 for spin
+        self.__ability = [1, 1] if ability is None else ability  # [4, 3] where 4 for pace and 3 for spin
 
     def get_hand(self):
         return self.__hand
@@ -30,15 +27,12 @@ class Batting(object):
 
 class Bowling(object):
     def __init__(self, hand: 'str' = "R", bowl_type: 'str' = "Pace", ability: 'List[int]' = None):
-        if ability is None:
-            self.__ability = [1, 2]
-        else:
-            self.__ability = ability
+        self.__ability = [1, 2] if ability is None else ability
         self.__hand = hand
         self.__bowl_type = bowl_type
 
     def get_ability(self):
-        return self.__ability
+        return self.__ability  # [1, 2] for short ball and full ball
 
     def get_hand(self):
         return self.__hand
