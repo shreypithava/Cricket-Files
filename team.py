@@ -1,11 +1,12 @@
 from random import randint
+from typing import List
 
 from player import Player, Personal
 
 
 class Team(object):
     def __init__(self):
-        self.__players = list()
+        self.__players: 'List[Player]' = list()
         self.__set_players()
 
     def __set_players(self):  # complete this function

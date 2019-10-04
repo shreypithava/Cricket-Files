@@ -24,7 +24,11 @@ def return_fake_probabilities():
     return the_list
 
 
-class Engine(object):  # think about Game class
+list_of_probability = return_fake_probabilities()
+
+
+# TODO: think about Game Class
+class Engine(object):
     def __init__(self):
         self.__blue_team = Team()
         self.__red_team = Team()
@@ -34,16 +38,34 @@ class Engine(object):  # think about Game class
         return self.__blue_team if blue else self.__red_team
 
     def play_game(self):
-        print(self.__red_team)
-        for ball in range(30):
-            pass
-            result = choice(shuffle(return_fake_probabilities()))
+        for _ in range(30):
+            shuffle(list_of_probability)
+            result = choice(list_of_probability)
             if result >= 0:
-                pass
+                self.__scoreboard.add(result)
             else:
-                pass
+                self.__scoreboard.wicket()
+                if self.__scoreboard.return_one_scorecard()[1] == 10:
+                    break
 
-    def __return_probabilities(self):  # complete this later
+        self.__scoreboard.switch()
+
+        for _ in range(30):
+            shuffle(list_of_probability)
+            result = choice(list_of_probability)
+            if result >= 0:
+                self.__scoreboard.add(result)
+                if self.__scoreboard.return_two_scorecard()[0] > self.__scoreboard.return_one_scorecard()[0]:
+                    break
+            else:
+                self.__scoreboard.wicket()
+                if self.__scoreboard.return_two_scorecard()[1] == 10:
+                    break
+
+        self.__print_results()
+
+    # TODO: complete this function
+    def __return_probabilities(self):
         # runs_list = list()
         # print(self.__red_team)
         # while sum(runs_list) != 100:
@@ -53,7 +75,14 @@ class Engine(object):  # think about Game class
         # return runs_list
         pass
 
+    def __print_results(self):
+        scorecards = self.__scoreboard.return_one_scorecard(), self.__scoreboard.return_two_scorecard()
+        print("Team 1 : {}/{} {}.{}".format(scorecards[0][0], scorecards[0][1], scorecards[0][2] // 6,
+                                            scorecards[0][2] % 6))
+        print("Team 2 : {}/{} {}.{}".format(scorecards[1][0], scorecards[1][1], scorecards[1][2] // 6,
+                                            scorecards[1][2] % 6))
+
 
 if __name__ == '__main__':
     engine = Engine()
-    # engine.play_game()
+    engine.play_game()
