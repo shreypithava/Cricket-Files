@@ -66,13 +66,6 @@ class Engine(object):
 
     # TODO: complete this function
     def __return_probabilities(self):
-        # runs_list = list()
-        # print(self.__red_team)
-        # while sum(runs_list) != 100:
-        #     runs_list = list()
-        #     runs_list.append(randint(0, ))
-        #
-        # return runs_list
         pass
 
     def __print_results(self):
