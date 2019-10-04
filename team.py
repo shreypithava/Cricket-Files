@@ -1,15 +1,16 @@
 from random import randint
-from typing import List
 
 from player import Player, Personal
 
 
 class Team(object):
+
     def __init__(self):
-        self.__players: 'List[Player]' = list()
+        self.__players: 'list[Player]' = list()
         self.__set_players()
 
-    def __set_players(self):  # complete this function
+    # TODO: modify and complete this function
+    def __set_players(self):
         for _ in range(11):
             self.__players.append(Player(personal=Personal(name=str(randint(10000, 100000)))))
 

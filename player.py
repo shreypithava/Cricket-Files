@@ -1,6 +1,3 @@
-from typing import List
-
-
 class Fielding(object):
     def __init__(self, agility: 'int' = 1, catching: 'int' = 1):
         self.__agility = agility
@@ -14,7 +11,7 @@ class Fielding(object):
 
 
 class Batting(object):
-    def __init__(self, hand: 'str' = "R", ability: 'List[int]' = None):
+    def __init__(self, hand: 'str' = "R", ability: 'list[int]' = None):
         self.__hand = hand
         self.__ability = [1, 1] if ability is None else ability  # [4, 3] where 4 for pace and 3 for spin
 
@@ -26,7 +23,7 @@ class Batting(object):
 
 
 class Bowling(object):
-    def __init__(self, hand: 'str' = "R", bowl_type: 'str' = "Pace", ability: 'List[int]' = None):
+    def __init__(self, hand: 'str' = "R", bowl_type: 'str' = "Pace", ability: 'list[int]' = None):
         self.__ability = [1, 2] if ability is None else ability
         self.__hand = hand
         self.__bowl_type = bowl_type
@@ -43,6 +40,7 @@ class Bowling(object):
 
 class Personal(object):
     def __init__(self, name: 'str' = "", xp: 'int' = 0, age: 'int' = 18, fitness: 'int' = 25):
+        self.__id = None  # future development
         self.__name = name
         self.__xp = xp
         self.__age = age
@@ -60,7 +58,7 @@ class Personal(object):
     def get_fitness(self):
         return self.__fitness
 
-    # think about career statistics
+    # TODO: think about career statistics
 
 
 class Player(object):
