@@ -34,23 +34,25 @@ class Engine(object):
         self.__red_team = Team()
         self.__scoreboard = ScoreBoard(self.__blue_team, self.__red_team)
 
-    def play_game(self):
-        self.__play_innings(False)
+    def play_game(self, overs: 'int'):
+        self.__play_innings(False, overs)
         self.__scoreboard.switch()
-        self.__play_innings(True)
+        self.__play_innings(True, overs)
         self.__print_results()
 
-    def __play_innings(self, second_innings: 'bool'):
-        for _ in range(30):
+    def __play_innings(self, second_innings: 'bool', overs: 'int'):
+        for _ in range(overs * 6):
             shuffle(list_of_probability)
             result = choice(list_of_probability)
             self.__scoreboard.action(result)
-            if second_innings and \
-                    (self.__scoreboard.return_two_scorecard().return_total_runs() >
-                     self.__scoreboard.return_one_scorecard().return_total_runs() or
-                     self.__scoreboard.return_two_scorecard().wickets_related(True)):
-                break
-            if not second_innings and self.__scoreboard.return_one_scorecard().wickets_related(True):
+            if (second_innings and
+                (self.__scoreboard.return_two_scorecard().return_batting(1) >
+                 self.__scoreboard.return_one_scorecard().return_batting(1)
+                 or
+                 self.__scoreboard.return_two_scorecard().wickets() == 10)) \
+                    or (
+                    not second_innings and
+                    self.__scoreboard.return_one_scorecard().wickets() == 10):
                 break
 
     # TODO: complete this function in future
@@ -58,13 +60,26 @@ class Engine(object):
         pass
 
     def __print_results(self):
-        scorecard1, scorecard2 = self.__scoreboard.return_one_scorecard(), self.__scoreboard.return_two_scorecard()
-        print("Team 1: {}/{} {}.{}".format(scorecard1.return_total_runs(), scorecard1.wickets_related(False),
-                                           scorecard1.return_balls() // 6, scorecard1.return_balls() % 6))
-        print("Team 2: {}/{} {}.{}".format(scorecard2.return_total_runs(), scorecard2.wickets_related(False),
-                                           scorecard2.return_balls() // 6, scorecard2.return_balls() % 6))
+        scorecard1, scorecard2 = (self.__scoreboard.return_one_scorecard(),
+                                  self.__scoreboard.return_two_scorecard())
+
+        print("Team 1: {}/{} {}.{} 4: {}, 6: {}".format(
+            scorecard1.return_batting(1),
+            scorecard1.wickets(),
+            scorecard1.return_batting(2) // 6,
+            scorecard1.return_batting(2) % 6,
+            scorecard1.return_batting(3),
+            scorecard1.return_batting(4)))
+
+        print("Team 2: {}/{} {}.{} 4: {}, 6: {}".format(
+            scorecard2.return_batting(1),
+            scorecard2.wickets(),
+            scorecard2.return_batting(2) // 6,
+            scorecard2.return_batting(2) % 6,
+            scorecard2.return_batting(3),
+            scorecard2.return_batting(4)))
 
 
 if __name__ == '__main__':
     engine = Engine()
-    engine.play_game()
+    engine.play_game(overs=20)
