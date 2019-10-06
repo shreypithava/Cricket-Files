@@ -1,7 +1,7 @@
 from random import choice, shuffle
 
-from team import Team
 from scoreboard import ScoreBoard
+from team import Team
 
 
 def return_fake_probabilities():
@@ -34,36 +34,24 @@ class Engine(object):
         self.__red_team = Team()
         self.__scoreboard = ScoreBoard(self.__blue_team, self.__red_team)
 
-    def __get_team(self, blue: 'bool'):
-        return self.__blue_team if blue else self.__red_team
-
     def play_game(self):
-        for _ in range(30):
-            shuffle(list_of_probability)
-            result = choice(list_of_probability)
-            if result >= 0:
-                self.__scoreboard.add(result)
-            else:
-                self.__scoreboard.got_wicket()
-                if self.__scoreboard.return_one_scorecard().wickets_related(True):
-                    pass
-
+        self.__play_innings(False)
         self.__scoreboard.switch()
+        self.__play_innings(True)
+        self.__print_results()
 
+    def __play_innings(self, second_innings: 'bool'):
         for _ in range(30):
             shuffle(list_of_probability)
             result = choice(list_of_probability)
-            if result >= 0:
-                self.__scoreboard.add(result)
-                if self.__scoreboard.return_two_scorecard().return_total_runs() > \
-                        self.__scoreboard.return_one_scorecard().return_total_runs():
-                    break
-            else:
-                self.__scoreboard.got_wicket()
-                if self.__scoreboard.return_two_scorecard().wickets_related(True):
-                    break
-
-        self.__print_results()
+            self.__scoreboard.action(result)
+            if second_innings and \
+                    (self.__scoreboard.return_two_scorecard().return_total_runs() >
+                     self.__scoreboard.return_one_scorecard().return_total_runs() or
+                     self.__scoreboard.return_two_scorecard().wickets_related(True)):
+                break
+            if not second_innings and self.__scoreboard.return_one_scorecard().wickets_related(True):
+                break
 
     # TODO: complete this function in future
     def __return_probabilities(self):
@@ -71,7 +59,6 @@ class Engine(object):
 
     def __print_results(self):
         scorecard1, scorecard2 = self.__scoreboard.return_one_scorecard(), self.__scoreboard.return_two_scorecard()
-        # TODO: print and find how
         print("Team 1: {}/{} {}.{}".format(scorecard1.return_total_runs(), scorecard1.wickets_related(False),
                                            scorecard1.return_balls() // 6, scorecard1.return_balls() % 6))
         print("Team 2: {}/{} {}.{}".format(scorecard2.return_total_runs(), scorecard2.wickets_related(False),
