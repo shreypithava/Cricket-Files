@@ -27,7 +27,8 @@ def return_fake_probabilities():
 list_of_probability = return_fake_probabilities()
 
 
-# TODO: think about Game Class
+# TODO: think about Game Class and
+#  Manager class(Game has 2 managers, Engine and rearrange)
 class Engine(object):
     def __init__(self):
         self.__blue_team = Team()
@@ -78,8 +79,10 @@ class Engine(object):
             scorecard2.return_batting(2) % 6,
             scorecard2.return_batting(3),
             scorecard2.return_batting(4)))
+        scorecard1.print_whole_scorecard()
+        scorecard2.print_whole_scorecard()
 
 
 if __name__ == '__main__':
     engine = Engine()
-    engine.play_game(overs=20)
+    engine.play_game(overs=40)

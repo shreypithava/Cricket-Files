@@ -72,8 +72,11 @@ class ScoreCard(object):
             self.__zero_index_batsman = not self.__zero_index_batsman
             temp = self.__bowler_idx
             # TODO: select bowler in future developments
-            while temp == self.__bowler_idx:
+            while True:
                 self.__bowler_idx = randint(0, 10)
+                if temp != self.__bowler_idx and \
+                        self.__list_of_bowling[self.__bowler_idx][1] != 24:
+                    break
 
     def wickets(self):
         total_wickets = 0
@@ -81,9 +84,20 @@ class ScoreCard(object):
             total_wickets += wickets
         return total_wickets
 
-    def return_batting(self,
-                       idx: 'int'):  # runs: 1, balls: 2, fours: 3, sixes: 4
+    def return_batting(self, idx: 'int'):
+        # runs: 1, balls: 2, fours: 3, sixes: 4
         total = 0
         for info in self.__list_of_batting:
             total += info[idx]
         return total
+
+    def print_whole_scorecard(self):
+        print("-" * 5 + "Batting" + "-" * 5)
+        for batsman in self.__list_of_batting:
+            print('{}  {}({})'.format(batsman[0], batsman[1], batsman[2]))
+        print("-" * 5 + "Bowling" + "-" * 5)
+        for bowler in self.__list_of_bowling:
+            print("{}  {}-{}-{}-{}".format(bowler[0], bowler[1],
+                                           bowler[2], bowler[3],
+                                           bowler[4]))
+        print()
