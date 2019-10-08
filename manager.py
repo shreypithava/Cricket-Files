@@ -6,3 +6,6 @@ class Manager(object):
     def __init__(self):
         self.__id = None  # future developments
         self.__team = Team()
+
+    def get_team(self):
+        return self.__team

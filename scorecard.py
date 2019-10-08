@@ -13,16 +13,16 @@ class ScoreCard(object):
             'list[list[str, int, int, int, int]]' \
             = list()  # overs, maidens, runs, wickets
         self.__extras = None  # future developments
-        self.__zero_index_batsman: 'bool' = True
-        self.__people_at_crease: 'list[int]' = [1, 2]
+        self.__zero_index_batsman = True
+        self.__people_at_crease = [1, 2]
         self.__bowler_idx = 0
         self.__fill_scorecard(team1, team2)
 
     def __fill_scorecard(self, team1: 'Team', team2: 'Team'):
         for idx in range(11):
-            temp_bat = team1.get_players()[idx].get_personal().get_name()
+            temp_bat = team1.get_players()[idx].get_name()
             self.__list_of_batting.append([temp_bat, 0, 0, 0, 0])
-            temp_bowl = team2.get_players()[idx].get_personal().get_name()
+            temp_bowl = team2.get_players()[idx].get_name()
             self.__list_of_bowling.append([temp_bowl, 0, 0, 0, 0])
 
     def action(self, runs: 'int'):
@@ -37,7 +37,6 @@ class ScoreCard(object):
     def __boundaries_idx(result: 'int'):
         return 3 if result == 4 else 4
 
-    # TODO: more DRY coding
     def __add_runs(self, runs: 'int'):
         self.__list_of_batting[
             self.__people_at_crease[self.__return_idx()] - 1][1] += runs
@@ -97,7 +96,6 @@ class ScoreCard(object):
             print('{}  {}({})'.format(batsman[0], batsman[1], batsman[2]))
         print("-" * 5 + "Bowling" + "-" * 5)
         for bowler in self.__list_of_bowling:
-            print("{}  {}-{}-{}-{}".format(bowler[0], bowler[1],
-                                           bowler[2], bowler[3],
-                                           bowler[4]))
+            print("{}  {}-{}-{}-{}".format(
+                bowler[0], bowler[1], bowler[2], bowler[3], bowler[4]))
         print()

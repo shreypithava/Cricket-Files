@@ -80,6 +80,9 @@ class Player(object):
     def get_personal(self):
         return self.__personal
 
+    def get_name(self):
+        return self.__personal.get_name()
+
     def get_batting(self):
         return self.__batting
 
