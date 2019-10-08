@@ -25,10 +25,10 @@ class Engine(object):
     def __init__(self):
         self.__probabilities_list = return_fake_probabilities()
 
-    # TODO: complete this function in future
     def return_fake_result(self):
         shuffle(self.__probabilities_list)
         return choice(self.__probabilities_list)
 
+    # TODO: complete this function in future
     def return_result(self):
         pass
