@@ -1,7 +1,7 @@
 from random import choice, shuffle
 
 
-def return_fake_probabilities():
+def return_list():
     the_list = list()
     for number in range(100):
         if number < 15:
@@ -22,13 +22,17 @@ def return_fake_probabilities():
 
 
 class Engine(object):
-    def __init__(self):
-        self.__probabilities_list = return_fake_probabilities()
 
-    def return_fake_result(self):
-        shuffle(self.__probabilities_list)
-        return choice(self.__probabilities_list)
+    def __init__(self):
+        self._probabilities_list = return_list()
 
     # TODO: complete this function in future
     def return_result(self):
         pass
+
+
+class FakeEngine(Engine):
+
+    def return_result(self):
+        shuffle(self._probabilities_list)
+        return choice(self._probabilities_list)

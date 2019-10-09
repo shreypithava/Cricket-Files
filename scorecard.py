@@ -8,10 +8,10 @@ class ScoreCard(object):
     def __init__(self, team1: 'Team', team2: 'Team'):
         self.__list_of_batting: \
             'list[list[str, int, int, int, int]]' \
-            = list()  # runs, balls, fours, six
+            = list()  # name, runs, balls, fours, six
         self.__list_of_bowling: \
             'list[list[str, int, int, int, int]]' \
-            = list()  # overs, maidens, runs, wickets
+            = list()  # name, overs, maidens, runs, wickets
         self.__extras = None  # future developments
         self.__zero_index_batsman = True
         self.__people_at_crease = [1, 2]
@@ -97,5 +97,12 @@ class ScoreCard(object):
         print("-" * 5 + "Bowling" + "-" * 5)
         for bowler in self.__list_of_bowling:
             print("{}  {}-{}-{}-{}".format(
-                bowler[0], bowler[1], bowler[2], bowler[3], bowler[4]))
+                bowler[0], self.__bowl_overs(int(bowler[1])),
+                bowler[2], bowler[3], bowler[4]))
         print()
+
+    @staticmethod
+    def __bowl_overs(balls: 'int'):
+        if balls % 6 == 0:
+            return '{}'.format(balls // 6)
+        return '{}.{}'.format(balls // 6, balls % 6)

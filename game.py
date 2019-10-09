@@ -1,4 +1,4 @@
-from engine import Engine
+from engine import FakeEngine
 from manager import Manager
 from scoreboard import ScoreBoard
 
@@ -10,7 +10,7 @@ class Game(object):
         self.__player1 = Manager()
         self.__player2 = Manager()
         self.__overs = overs
-        self.__engine = Engine()
+        self.__fake_engine = FakeEngine()
         self.__scoreboard = ScoreBoard(self.__player1.get_team(),
                                        self.__player2.get_team())
 
@@ -22,21 +22,19 @@ class Game(object):
 
     def __play_innings(self, second_innings: 'bool'):
         for _ in range(self.__overs * 6):
-            result = self.__engine.return_fake_result()
+            result = self.__fake_engine.return_result()
             self.__scoreboard.action(result)
             if (second_innings and
-                (self.__scoreboard.return_two_scorecard().return_batting(1) >
-                 self.__scoreboard.return_one_scorecard().return_batting(1)
-                 or
-                 self.__scoreboard.return_two_scorecard().wickets() == 10)) \
-                    or (
-                    not second_innings and
-                    self.__scoreboard.return_one_scorecard().wickets() == 10):
+                (self.__scoreboard.return_scorecard(2).return_batting(1) >
+                 self.__scoreboard.return_scorecard(1).return_batting(1) or
+                 self.__scoreboard.return_scorecard(2).wickets() == 10)) or \
+                    (not second_innings and
+                     self.__scoreboard.return_scorecard(1).wickets() == 10):
                 break
 
     def __print_results(self):
-        scorecard1, scorecard2 = (self.__scoreboard.return_one_scorecard(),
-                                  self.__scoreboard.return_two_scorecard())
+        scorecard1, scorecard2 = (self.__scoreboard.return_scorecard(1),
+                                  self.__scoreboard.return_scorecard(2))
         self.__print_scorecard_summary(scorecard1)
         self.__print_scorecard_summary(scorecard2)
 
