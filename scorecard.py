@@ -47,6 +47,7 @@ class ScoreCard(object):
                 self.__people_at_crease[self.__return_idx()] - 1][
                 self.__boundaries_idx(runs)] += 1
         self.__zero_index_batsman = runs % 2 == self.__return_idx()
+
         self.__list_of_bowling[self.__bowler_idx][3] += runs
 
     def __return_idx(self):
@@ -77,13 +78,13 @@ class ScoreCard(object):
                         self.__list_of_bowling[self.__bowler_idx][1] != 24:
                     break
 
-    def wickets(self):
+    def wickets(self) -> 'int':
         total_wickets = 0
         for _, _, _, _, wickets in self.__list_of_bowling:
             total_wickets += wickets
         return total_wickets
 
-    def return_batting(self, idx: 'int'):
+    def return_batting(self, idx: 'int') -> 'int':
         # runs: 1, balls: 2, fours: 3, sixes: 4
         total = 0
         for info in self.__list_of_batting:
@@ -102,7 +103,7 @@ class ScoreCard(object):
         print()
 
     @staticmethod
-    def __bowl_overs(balls: 'int'):
+    def __bowl_overs(balls: 'int') -> 'str':
         if balls % 6 == 0:
             return '{}'.format(balls // 6)
         return '{}.{}'.format(balls // 6, balls % 6)

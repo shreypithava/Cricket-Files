@@ -1,12 +1,15 @@
 from team import Team
 
 
-# TODO: complete Manager class
 class Manager(object):
-    def __init__(self):
-        self.__id = None  # future developments
+    def __init__(self, name: 'str'):
+        self.__id = name  # future developments
         # TODO: in future, get team from database by passing self.__id
         self.__team = Team()
 
-    def get_team(self):
+    def get_team(self) -> Team:
         return self.__team
+
+    # TODO: look at line 25 in game.py
+    def update_stats_in_database(self):
+        pass

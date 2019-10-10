@@ -15,8 +15,7 @@ class ScoreBoard(object):
     def action(self, runs: 'int'):
         self.__batting_team.action(runs)
 
-    def return_scorecard(self, innings: 'int'):
+    def return_scorecard(self, innings: 'int') -> 'ScoreCard':
         if innings == 1:
             return self.__one_scorecard
-        if innings == 2:
-            return self.__two_scorecard
+        return self.__two_scorecard

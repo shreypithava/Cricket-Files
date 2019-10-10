@@ -33,6 +33,6 @@ class Engine(object):
 
 class FakeEngine(Engine):
 
-    def return_result(self):
+    def return_result(self) -> int:
         shuffle(self._probabilities_list)
         return choice(self._probabilities_list)
