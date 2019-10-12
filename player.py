@@ -46,7 +46,6 @@ class Personal(object):
                  xp: 'int' = 0,
                  age: 'int' = 18,
                  fitness: 'int' = 25):
-        self.__id = None  # future development
         self.__name = name
         self.__xp = xp
         self.__age = age
@@ -72,6 +71,7 @@ class Player(object):
                  batting=Batting(),
                  bowling=Bowling(),
                  fielding=Fielding()):
+        self.__id = None  # future development
         self.__personal = personal
         self.__batting = batting
         self.__bowling = bowling
