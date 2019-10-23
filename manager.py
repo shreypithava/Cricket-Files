@@ -2,6 +2,7 @@ from team import Team
 
 
 class Manager(object):
+
     def __init__(self, name: 'str'):
         self.__id = name  # future developments
         # TODO: in future, get team from database by passing self.__id

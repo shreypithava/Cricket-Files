@@ -5,8 +5,8 @@ from team import Team
 class ScoreBoard(object):
 
     def __init__(self, team1: 'Team', team2: 'Team'):
-        self.__one_scorecard = ScoreCard(team1, team2)
-        self.__two_scorecard = ScoreCard(team2, team1)
+        self.__one_scorecard = ScoreCard(team1, team2, 1)
+        self.__two_scorecard = ScoreCard(team2, team1, 2)
         self.__batting_team = self.__one_scorecard
 
     def switch(self):

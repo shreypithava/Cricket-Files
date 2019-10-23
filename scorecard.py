@@ -5,7 +5,7 @@ from team import Team
 
 class ScoreCard(object):
 
-    def __init__(self, team1: 'Team', team2: 'Team'):
+    def __init__(self, team1: 'Team', team2: 'Team', innings: 'int'):
         self.__list_of_batting: \
             'list[list[str, int, int, int, int]]' \
             = list()  # name, runs, balls, fours, six
@@ -13,19 +13,28 @@ class ScoreCard(object):
             'list[list[str, int, int, int, int]]' \
             = list()  # name, overs, maidens, runs, wickets
         self.__extras = None  # future developments
+        self.__innings = innings
         self.__zero_index_batsman = True
         self.__people_at_crease = [1, 2]
+        self.__ball_by_ball = list()
         self.__bowler_idx = 0
         self.__fill_scorecard(team1, team2)
 
+    def get_innings(self):
+        return self.__innings
+
     def __fill_scorecard(self, team1: 'Team', team2: 'Team'):
+        batting_team = team1.get_players()
+        bowling_team = team2.get_players()
         for idx in range(11):
-            temp_bat = team1.get_players()[idx].get_name()
+            # TODO: pass whole player class instead of just name
+            temp_bat = batting_team[idx].get_name()
             self.__list_of_batting.append([temp_bat, 0, 0, 0, 0])
-            temp_bowl = team2.get_players()[idx].get_name()
+            temp_bowl = bowling_team[idx].get_name()
             self.__list_of_bowling.append([temp_bowl, 0, 0, 0, 0])
 
     def action(self, runs: 'int'):
+        self.__ball_by_ball.append(runs)
         if runs >= 0:
             self.__add_runs(runs)
         else:
@@ -97,9 +106,10 @@ class ScoreCard(object):
             print('{}  {}({})'.format(batsman[0], batsman[1], batsman[2]))
         print("-" * 5 + "Bowling" + "-" * 5)
         for bowler in self.__list_of_bowling:
-            print("{}  {}-{}-{}-{}".format(
-                bowler[0], self.__bowl_overs(int(bowler[1])),
-                bowler[2], bowler[3], bowler[4]))
+            if self.__bowl_overs(int(bowler[1])) != '0':
+                print("{}  {}-{}-{}-{}".format(
+                    bowler[0], self.__bowl_overs(int(bowler[1])),
+                    bowler[2], bowler[3], bowler[4]))
         print()
 
     @staticmethod

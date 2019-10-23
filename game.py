@@ -48,7 +48,9 @@ class Game(object):
 
     @staticmethod
     def __print_scorecard_summary(scorecard: 'ScoreCard'):
-        print("Team 1: {}/{} {}.{} 4: {}, 6: {}".format(
+        # FIXME: team 1 bug in both summaries
+        print("Team {}: {}/{} {}.{} 4: {}, 6: {}".format(
+            scorecard.get_innings(),
             scorecard.return_batting(1),
             scorecard.wickets(),
             scorecard.return_batting(2) // 6,
