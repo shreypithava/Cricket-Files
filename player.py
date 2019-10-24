@@ -88,14 +88,10 @@ class Personal(object):
     def get_fitness(self):
         return self.__fitness
 
-    # TODO: think about career statistics
-
 
 class Player(object):
-    def __init__(self, personal=None,
-                 batting=None,
-                 bowling=None,
-                 fielding=None):
+    def __init__(self, personal=None, batting=None,
+                 bowling=None, fielding=None):
         self.__id = None  # future development
         self.__personal = Personal() if personal is None else personal
         self.__batting = Batting() if batting is None else batting
