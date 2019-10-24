@@ -30,8 +30,8 @@ class Game(object):
             result = self.__fake_engine.return_result()
             self.__scoreboard.action(result)
             if (second_innings and
-                (self.__scoreboard.return_scorecard(2).return_batting(1) >
-                 self.__scoreboard.return_scorecard(1).return_batting(1) or
+                (self.__scoreboard.return_scorecard(2).return_batting(0) >
+                 self.__scoreboard.return_scorecard(1).return_batting(0) or
                  self.__scoreboard.return_scorecard(2).wickets() == 10)) or \
                     (not second_innings and
                      self.__scoreboard.return_scorecard(1).wickets() == 10):
@@ -48,12 +48,11 @@ class Game(object):
 
     @staticmethod
     def __print_scorecard_summary(scorecard: 'ScoreCard'):
-        # FIXME: team 1 bug in both summaries
         print("Team {}: {}/{} {}.{} 4: {}, 6: {}".format(
             scorecard.get_innings(),
-            scorecard.return_batting(1),
+            scorecard.return_batting(0),
             scorecard.wickets(),
-            scorecard.return_batting(2) // 6,
-            scorecard.return_batting(2) % 6,
-            scorecard.return_batting(3),
-            scorecard.return_batting(4)))
+            scorecard.return_batting(1) // 6,
+            scorecard.return_batting(1) % 6,
+            scorecard.return_batting(2),
+            scorecard.return_batting(3)))

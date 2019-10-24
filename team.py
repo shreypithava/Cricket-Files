@@ -1,11 +1,4 @@
-from random import choices
-from string import ascii_lowercase, digits
-
-from player import Player, Personal
-
-
-def return_random():
-    return "".join(choices(ascii_lowercase + digits, k=7))
+from player import Player
 
 
 class Team(object):
@@ -18,8 +11,7 @@ class Team(object):
     # TODO: also look at line 13 in manager.py
     def __set_players(self):
         for _ in range(11):
-            self.__players.append(Player(
-                personal=Personal(name=return_random())))
+            self.__players.append(Player())
 
     def get_players(self) -> 'list[Player]':
         return self.__players

@@ -11,6 +11,6 @@ class Manager(object):
     def get_team(self) -> Team:
         return self.__team
 
-    # TODO: look at line 25 in game.py
+    # TODO: look at line 25 in game.py8
     def update_stats_in_database(self):
         pass
