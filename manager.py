@@ -16,8 +16,8 @@ class Manager(object):
         return self.__id
 
     def update_manager_database(self, result: 'int'):
-        db = sqlite3.connect('database.db')
         query = 'SELECT * FROM Manager WHERE ID = {}'.format(self.__id)
+        db = sqlite3.connect('database.db')
         records = db.execute(query).fetchone()[1:]
 
         if result == 0:

@@ -47,7 +47,7 @@ class Bowling(object):
         self.__ability = [1, 2] if ability is None else ability
         self.__hand = hand
         self.__bowl_type = bowl_type
-        self.__stats = [0, 0, 0, 0]  # overs, maidens, runs, wickets
+        self.__stats = [0, 0, 0, 0]  # balls, maidens, runs, wickets
 
     def get_ability(self):
         return self.__ability  # [1, 2] for short ball and full ball
@@ -99,26 +99,29 @@ class Player(object):
         self.__fielding = None  # Fielding()
         self.__setup()
 
+    def get_id(self):
+        return self.__id
+
     def __setup(self):
         query = 'SELECT * FROM Player WHERE ID = {}'.format(self.__id)
         db = sqlite3.connect('database.db')
         record = list(db.execute(query).fetchone())
         db.close()
 
-        name, xp, age, fitness = record[1], \
-            json.loads(record[2])['matches'], record[3], record[11]
+        name, xp, age, fitness = (record[1], json.loads(record[2])['matches'],
+                                  record[3], record[11])
         self.__personal = Personal(name, xp, age, fitness)
 
-        hand, ability = json.loads(record[8])['bat_hand'], \
-            json.loads(record[9])['bat']
+        hand, ability = (json.loads(record[8])['bat_hand'],
+                         json.loads(record[9])['bat'])
         self.__batting = Batting(hand, ability)
 
-        hand, ability = json.loads(record[8])['bowl_hand'], \
-            json.loads(record[9])['bowl']
+        hand, ability = (json.loads(record[8])['bowl_hand'],
+                         json.loads(record[9])['bowl'])
         self.__bowling = Bowling(hand=hand, ability=ability)
 
-        agility, catching = json.loads(record[10])['agility'], \
-            json.loads(record[10])['catching']
+        agility, catching = (json.loads(record[10])['agility'],
+                             json.loads(record[10])['catching'])
         self.__fielding = Fielding(agility, catching)
 
     def get_personal(self):
@@ -147,7 +150,3 @@ class Player(object):
 
     def get_bowl_stats(self):
         return self.__bowling.get_stats()
-
-    def update_stats_to_database(self):
-        # TODO: start here tomorrow
-        pass

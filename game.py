@@ -1,3 +1,5 @@
+import sqlite3
+
 from engine import FakeEngine
 from manager import Manager
 from scoreboard import ScoreBoard
@@ -23,9 +25,41 @@ class Game(object):
     def __post_match(self):
         self.__print_results()
         # TODO: pass ScoreBoard, (manager1 or manager2)
-        #  to Manager to make changes to database
+        self.__update_match_in_database()
         self.__manager1.update_stats_in_database()
         self.__manager2.update_stats_in_database()
+
+    def __update_match_in_database(self):
+
+        scorecard1, scorecard2 = (self.__scoreboard.return_scorecard(1),
+                                  self.__scoreboard.return_scorecard(2))
+        stats_json = {"inning_1": {"bat": list(), "bowl": list(),
+                                   "ball_by_ball":
+                                       scorecard1.get_ball_by_ball()},
+                      "inning_2": {"bat": list(), "bowl": list(),
+                                   "ball_by_ball":
+                                       scorecard2.get_ball_by_ball()}}
+
+        for player in scorecard1.get_list_of_batsman():
+            person = [player.get_id(), player.get_bat_stats()]
+            stats_json['inning_1']['bat'].append(person)
+        for player in scorecard1.get_list_of_bowlers():
+            person = [player.get_id(), player.get_bowl_stats()]
+            stats_json['inning_1']['bowl'].append(person)
+        for player in scorecard2.get_list_of_batsman():
+            person = [player.get_id(), player.get_bat_stats()]
+            stats_json['inning_2']['bat'].append(person)
+        for player in scorecard2.get_list_of_bowlers():
+            person = [player.get_id(), player.get_bowl_stats()]
+            stats_json['inning_1']['bowl'].append(person)
+
+        query = 'INSERT INTO MATCH ({0}1, {0}2, stats) VALUES ({}, {}, {}})' \
+            .format('ManagerID', self.__manager1.get_id(),
+                    self.__manager2.get_id(), stats_json)
+        db = sqlite3.connect('database.db')
+        db.execute(query)
+        # db.commit()
+        db.close()
 
     def __play_innings(self, second_innings: 'bool'):
         for _ in range(self.__overs * 6):

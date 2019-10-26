@@ -16,6 +16,12 @@ class ScoreCard(object):
         self.__ball_by_ball = list()
         self.__bowler_idx = 0
 
+    def get_list_of_batsman(self):
+        return self.__list_of_batting
+
+    def get_list_of_bowlers(self):
+        return self.__list_of_bowling
+
     def get_innings(self):
         return self.__innings
 
@@ -43,6 +49,9 @@ class ScoreCard(object):
 
     def __invert_return_idx(self):
         return 1 if self.__return_idx() == 0 else 0
+
+    def get_ball_by_ball(self):
+        return self.__ball_by_ball
 
     def __check_if_over(self):
         if self.__list_of_bowling[self.__bowler_idx].get_bowl_stats()[0] \
