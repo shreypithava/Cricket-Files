@@ -1,16 +1,37 @@
+import sqlite3
+
 from team import Team
 
 
 class Manager(object):
 
-    def __init__(self, name: 'str'):
-        self.__id = name  # future developments
-        # TODO: in future, get team from database by passing self.__id
-        self.__team = Team()
+    def __init__(self, manager_id: 'int'):
+        self.__id = manager_id
+        self.__team = Team(self.__id)
 
     def get_team(self) -> Team:
         return self.__team
 
-    # TODO: look at line 25 in game.py8
+    def get_id(self):
+        return self.__id
+
+    def update_manager_database(self, result: 'int'):
+        db = sqlite3.connect('database.db')
+        query = 'SELECT * FROM Manager WHERE ID = {}'.format(self.__id)
+        records = db.execute(query).fetchone()[1:]
+
+        if result == 0:
+            db.execute('UPDATE Match SET Win = {} WHERE ID = {}'
+                       .format(records[0] + 1, self.__id))
+        elif result == 1:
+            db.execute('UPDATE Match SET Loss = {} WHERE ID = {}'
+                       .format(records[1] + 1, self.__id))
+        else:
+            db.execute('UPDATE Match SET Tie = {} WHERE ID = {}'
+                       .format(records[2] + 1, self.__id))
+
+        # db.commit()
+        db.close()
+
     def update_stats_in_database(self):
-        pass
+        self.__team.update_stats_in_database()

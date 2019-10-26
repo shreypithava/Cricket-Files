@@ -1,5 +1,5 @@
-from random import choices
-from string import ascii_lowercase, digits
+import json
+import sqlite3
 
 
 class Fielding(object):
@@ -70,8 +70,9 @@ class Bowling(object):
 
 
 class Personal(object):
-    def __init__(self, xp: 'int' = 0, age: 'int' = 18, fitness: 'int' = 25):
-        self.__name = "".join(choices(ascii_lowercase + digits, k=7))
+    def __init__(self, name: 'str', xp: 'int' = 0,
+                 age: 'int' = 18, fitness: 'int' = 25):
+        self.__name = name
         self.__xp = xp
         self.__age = age
         self.__fitness = fitness
@@ -90,13 +91,35 @@ class Personal(object):
 
 
 class Player(object):
-    def __init__(self, personal=None, batting=None,
-                 bowling=None, fielding=None):
-        self.__id = None  # future development
-        self.__personal = Personal() if personal is None else personal
-        self.__batting = Batting() if batting is None else batting
-        self.__bowling = Bowling() if bowling is None else bowling
-        self.__fielding = Fielding() if fielding is None else fielding
+    def __init__(self, player_id: 'int'):
+        self.__id = player_id
+        self.__personal = None  # Personal()
+        self.__batting = None  # Batting()
+        self.__bowling = None  # Bowling()
+        self.__fielding = None  # Fielding()
+        self.__setup()
+
+    def __setup(self):
+        query = 'SELECT * FROM Player WHERE ID = {}'.format(self.__id)
+        db = sqlite3.connect('database.db')
+        record = list(db.execute(query).fetchone())
+        db.close()
+
+        name, xp, age, fitness = record[1], \
+            json.loads(record[2])['matches'], record[3], record[11]
+        self.__personal = Personal(name, xp, age, fitness)
+
+        hand, ability = json.loads(record[8])['bat_hand'], \
+            json.loads(record[9])['bat']
+        self.__batting = Batting(hand, ability)
+
+        hand, ability = json.loads(record[8])['bowl_hand'], \
+            json.loads(record[9])['bowl']
+        self.__bowling = Bowling(hand=hand, ability=ability)
+
+        agility, catching = json.loads(record[10])['agility'], \
+            json.loads(record[10])['catching']
+        self.__fielding = Fielding(agility, catching)
 
     def get_personal(self):
         return self.__personal
@@ -124,3 +147,7 @@ class Player(object):
 
     def get_bowl_stats(self):
         return self.__bowling.get_stats()
+
+    def update_stats_to_database(self):
+        # TODO: start here tomorrow
+        pass
