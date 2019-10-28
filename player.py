@@ -1,5 +1,4 @@
 import json
-import sqlite3
 
 
 class Fielding(object):
@@ -71,7 +70,7 @@ class Bowling(object):
 
 class Personal(object):
     def __init__(self, name: 'str', xp: 'int' = 0,
-                 age: 'int' = 18, fitness: 'int' = 25):
+                 age=18, fitness: 'int' = 25):
         self.__name = name
         self.__xp = xp
         self.__age = age
@@ -91,23 +90,18 @@ class Personal(object):
 
 
 class Player(object):
-    def __init__(self, player_id: 'int'):
-        self.__id = player_id
+    def __init__(self, record: 'tuple'):
+        self.__id = None
         self.__personal = None  # Personal()
         self.__batting = None  # Batting()
         self.__bowling = None  # Bowling()
         self.__fielding = None  # Fielding()
-        self.__setup()
+        self.__setup(record)
 
     def get_id(self):
         return self.__id
 
-    def __setup(self):
-        query = 'SELECT * FROM Player WHERE ID = {}'.format(self.__id)
-        db = sqlite3.connect('database.db')
-        record = list(db.execute(query).fetchone())
-        db.close()
-
+    def __setup(self, record):
         name, xp, age, fitness = (record[1], json.loads(record[2])['matches'],
                                   record[3], record[11])
         self.__personal = Personal(name, xp, age, fitness)

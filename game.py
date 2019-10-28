@@ -24,7 +24,6 @@ class Game(object):
 
     def __post_match(self):
         self.__print_results()
-        # TODO: pass ScoreBoard, (manager1 or manager2)
         self.__update_match_in_database()
         self.__manager1.update_stats_in_database()
         self.__manager2.update_stats_in_database()
@@ -51,11 +50,13 @@ class Game(object):
             stats_json['inning_2']['bat'].append(person)
         for player in scorecard2.get_list_of_bowlers():
             person = [player.get_id(), player.get_bowl_stats()]
-            stats_json['inning_1']['bowl'].append(person)
+            stats_json['inning_2']['bowl'].append(person)
 
-        query = 'INSERT INTO MATCH ({0}1, {0}2, stats) VALUES ({}, {}, {}})' \
-            .format('ManagerID', self.__manager1.get_id(),
-                    self.__manager2.get_id(), stats_json)
+        query = 'INSERT INTO MATCH ({0}1, {0}2, stats) ' + \
+                'VALUES ({1}, {2}, {3})'.format('ManagerID',
+                                                self.__manager1.get_id(),
+                                                self.__manager2.get_id(),
+                                                stats_json)
         db = sqlite3.connect('database.db')
         db.execute(query)
         # db.commit()

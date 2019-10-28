@@ -11,16 +11,12 @@ class Team(object):
         self.__set_players(team_id)
 
     def __set_players(self, owner_id):
-        list_of_ids = list()
-
         db = sqlite3.connect('database.db')
-        query = 'SELECT ID FROM Player WHERE OwnerID = {}'.format(owner_id)
-        for player_id in db.execute(query):
-            list_of_ids.append(player_id[0])
+        owner_query = 'SELECT * FROM Player WHERE OwnerID = {}' \
+            .format(owner_id)
+        for player_record in db.execute(owner_query):
+            self.__players.append(Player(player_record))
         db.close()
-
-        for i_d in list_of_ids:
-            self.__players.append(Player(i_d))
 
     def get_players(self) -> 'list[Player]':
         return self.__players
