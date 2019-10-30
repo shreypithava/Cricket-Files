@@ -41,8 +41,8 @@ class Batting(object):
 
 class Bowling(object):
     def __init__(self, hand: 'str' = "R",
-                 bowl_type: 'str' = "Pace",
-                 ability: 'list[int]' = None):
+                 ability: 'list[int]' = None,
+                 bowl_type: 'str' = "Pace"):
         self.__ability = [1, 2] if ability is None else ability
         self.__hand = hand
         self.__bowl_type = bowl_type
@@ -102,6 +102,8 @@ class Player(object):
         return self.__id
 
     def __setup(self, record):
+        self.__id = record[0]
+
         name, xp, age, fitness = (record[1], json.loads(record[2])['matches'],
                                   record[3], record[11])
         self.__personal = Personal(name, xp, age, fitness)
@@ -112,7 +114,7 @@ class Player(object):
 
         hand, ability = (json.loads(record[8])['bowl_hand'],
                          json.loads(record[9])['bowl'])
-        self.__bowling = Bowling(hand=hand, ability=ability)
+        self.__bowling = Bowling(hand, ability)
 
         agility, catching = (json.loads(record[10])['agility'],
                              json.loads(record[10])['catching'])

@@ -1,3 +1,4 @@
+import json
 import sqlite3
 
 from engine import FakeEngine
@@ -29,36 +30,31 @@ class Game(object):
         self.__manager2.update_stats_in_database()
 
     def __update_match_in_database(self):
-
         scorecard1, scorecard2 = (self.__scoreboard.return_scorecard(1),
                                   self.__scoreboard.return_scorecard(2))
-        stats_json = {"inning_1": {"bat": list(), "bowl": list(),
-                                   "ball_by_ball":
-                                       scorecard1.get_ball_by_ball()},
-                      "inning_2": {"bat": list(), "bowl": list(),
-                                   "ball_by_ball":
-                                       scorecard2.get_ball_by_ball()}}
+
+        stats_json = {"inning_1": {"bat": list(), "bowl": list()},
+                      "inning_2": {"bat": list(), "bowl": list()}}
 
         for player in scorecard1.get_list_of_batsman():
-            person = [player.get_id(), player.get_bat_stats()]
+            person = [player.get_id(), player.get_bat_stats()[:2]]
             stats_json['inning_1']['bat'].append(person)
         for player in scorecard1.get_list_of_bowlers():
             person = [player.get_id(), player.get_bowl_stats()]
             stats_json['inning_1']['bowl'].append(person)
         for player in scorecard2.get_list_of_batsman():
-            person = [player.get_id(), player.get_bat_stats()]
+            person = [player.get_id(), player.get_bat_stats()[:2]]
             stats_json['inning_2']['bat'].append(person)
         for player in scorecard2.get_list_of_bowlers():
             person = [player.get_id(), player.get_bowl_stats()]
             stats_json['inning_2']['bowl'].append(person)
 
-        query = 'INSERT INTO MATCH ({0}1, {0}2, stats) ' + \
-                'VALUES ({1}, {2}, {3})'.format('ManagerID',
-                                                self.__manager1.get_id(),
-                                                self.__manager2.get_id(),
-                                                stats_json)
         db = sqlite3.connect('database.db')
-        db.execute(query)
+        # TODO: look in test.py
+        db.execute("""INSERT INTO Match (ManagerID1, ManagerID2, stats)
+         VALUES (?, ?, json(?));""", (self.__manager1.get_id(),
+                                      self.__manager2.get_id(),
+                                      json.dumps(stats_json)))
         # db.commit()
         db.close()
 
@@ -66,10 +62,9 @@ class Game(object):
         for _ in range(self.__overs * 6):
             result = self.__fake_engine.return_result()
             self.__scoreboard.action(result)
-            if (second_innings and
-                (self.__scoreboard.return_scorecard(2).return_batting(0) >
-                 self.__scoreboard.return_scorecard(1).return_batting(0) or
-                 self.__scoreboard.return_scorecard(2).wickets() == 10)) or \
+            if (self.__scoreboard.return_scorecard(2).return_batting(0) >
+                self.__scoreboard.return_scorecard(1).return_batting(0) or
+                self.__scoreboard.return_scorecard(2).wickets() == 10) or \
                     (not second_innings and
                      self.__scoreboard.return_scorecard(1).wickets() == 10):
                 break

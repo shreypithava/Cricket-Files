@@ -27,9 +27,8 @@ class Team(object):
             bat_stats, bowl_stats = player.get_bat_stats(), \
                                     player.get_bowl_stats()
 
-            ba_stats, bo_stats = 'Bat_stats', 'Bowl_stats'
             select_query = 'SELECT {}, {} FROM Player WHERE ID = {}' \
-                .format(ba_stats, bo_stats, player.get_id())
+                .format('Bat_stats', 'Bowl_stats', player.get_id())
             record = db.execute(select_query).fetchone()
 
             bat_records, bowl_records = (json.loads(record[0]),
@@ -57,12 +56,13 @@ class Team(object):
             bowl_set = {"balls": bowl_records['balls'] + bat_stats[0],
                         "wickets": bowl_records['wickets'] + bowl_stats[3],
                         "maidens": bowl_records['maidens'] + bowl_stats[1],
-                        "runs": bowl_records['runs'] + bowl_records[2],
+                        "runs": bowl_records['runs'] + bowl_stats[2],
                         "4wi": four_wik, "5wi": fiv_wik}
-
-            update_query = 'UPDATE Player SET {} = {}, {} = {} WHERE ID = {}' \
-                .format(ba_stats, bat_set, bo_stats, bowl_set, player.get_id())
-            db.execute(update_query)
+            # TODO: look in test.py
+            db.execute("""UPDATE Player SET Bat_stats = ?,
+            Bowl_stats = ? WHERE ID = ?;""", (json.dumps(bat_set),
+                                              json.dumps(bowl_set),
+                                              player.get_id()))
 
         # db.commit()
         db.close()

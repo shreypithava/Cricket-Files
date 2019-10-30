@@ -21,14 +21,14 @@ class Manager(object):
         records = db.execute(query).fetchone()[1:]
 
         if result == 0:
-            db.execute('UPDATE Match SET Win = {} WHERE ID = {}'
-                       .format(records[0] + 1, self.__id))
+            db.execute('UPDATE Manager SET Win = ? WHERE ID = ?;',
+                       (records[0] + 1, self.__id))
         elif result == 1:
-            db.execute('UPDATE Match SET Loss = {} WHERE ID = {}'
-                       .format(records[1] + 1, self.__id))
+            db.execute('UPDATE Manager SET Loss = ? WHERE ID = ?;',
+                       (records[1] + 1, self.__id))
         else:
-            db.execute('UPDATE Match SET Tie = {} WHERE ID = {}'
-                       .format(records[2] + 1, self.__id))
+            db.execute('UPDATE Manager SET Tie = ? WHERE ID = ?;',
+                       (records[2] + 1, self.__id))
 
         # db.commit()
         db.close()
