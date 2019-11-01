@@ -18,7 +18,8 @@ class Batting(object):
         self.__hand = hand
         self.__ability = [1, 1] if ability is None else ability
         # [4, 3] where 4 for pace and 3 for spin
-        self.__stats = [0, 0, 0, 0]  # runs, balls, fours, six
+        self.__stats = [0, 0, 0, 0, False, True]
+        # runs, balls, fours, six, played, not_out
 
     def get_hand(self):
         return self.__hand
@@ -29,6 +30,9 @@ class Batting(object):
     def get_stats(self):
         return self.__stats
 
+    def came_out(self):
+        self.__stats[4] = True
+
     def update_stats(self, runs: 'int'):
         if runs >= 0:
             self.__stats[0] += runs
@@ -36,6 +40,8 @@ class Batting(object):
                 self.__stats[2] += 1
             elif runs == 6:
                 self.__stats[3] += 1
+        else:
+            self.__stats[5] = False
         self.__stats[1] += 1
 
 
@@ -128,6 +134,9 @@ class Player(object):
 
     def get_batting(self):
         return self.__batting
+
+    def came_to_bat(self):
+        self.__batting.came_out()
 
     def get_bowling(self):
         return self.__bowling

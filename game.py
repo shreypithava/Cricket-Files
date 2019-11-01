@@ -1,4 +1,3 @@
-import json
 import sqlite3
 
 from engine import FakeEngine
@@ -23,15 +22,34 @@ class Game(object):
         self.__play_innings(True)
         self.__post_match()
 
+    def __play_innings(self, second_innings: 'bool'):
+        for _ in range(self.__overs * 6):
+            result = self.__fake_engine.return_result()
+            self.__scoreboard.action(result)
+            if (self.__scoreboard.return_scorecard(2).return_batting(0) >
+                self.__scoreboard.return_scorecard(1).return_batting(0) or
+                self.__scoreboard.return_scorecard(2).wickets() == 10) or \
+                    (not second_innings and
+                     self.__scoreboard.return_scorecard(1).wickets() == 10):
+                break
+
     def __post_match(self):
         self.__print_results()
         self.__update_match_in_database()
-        self.__manager1.update_stats_in_database()
-        self.__manager2.update_stats_in_database()
 
     def __update_match_in_database(self):
         scorecard1, scorecard2 = (self.__scoreboard.return_scorecard(1),
                                   self.__scoreboard.return_scorecard(2))
+
+        if scorecard1.return_batting(0) > scorecard2.return_batting(0):
+            self.__manager1.update_manager_and_player_database(0)
+            self.__manager2.update_manager_and_player_database(1)
+        elif scorecard1.return_batting(0) < scorecard2.return_batting(0):
+            self.__manager1.update_manager_and_player_database(1)
+            self.__manager2.update_manager_and_player_database(0)
+        else:
+            self.__manager1.update_manager_and_player_database(2)
+            self.__manager2.update_manager_and_player_database(2)
 
         stats_json = {"inning_1": {"bat": list(), "bowl": list()},
                       "inning_2": {"bat": list(), "bowl": list()}}
@@ -50,38 +68,31 @@ class Game(object):
             stats_json['inning_2']['bowl'].append(person)
 
         db = sqlite3.connect('database.db')
-        # TODO: look in test.py
-        db.execute("""INSERT INTO Match (ManagerID1, ManagerID2, stats)
-         VALUES (?, ?, json(?));""", (self.__manager1.get_id(),
-                                      self.__manager2.get_id(),
-                                      json.dumps(stats_json)))
+        # PRAGMA foreign_keys = on;
+        db.execute("""INSERT INTO Match (ManagerID1, ManagerID2) VALUES (?, ?)
+        """, (self.__manager1.get_id(),
+              self.__manager2.get_id()))
+
+        match_id = db.execute("""SELECT count(*) FROM Match""").fetchone()[0]
+
+        db.execute("""UPDATE Match SET
+        Inning_1 = (SELECT json_set(
+        json(Inning_1), '$.bat', json(?), '$.bowl', json(?)) FROM Match),
+        Inning_2 = (SELECT json_set(
+        json(Inning_2), '$.bat', json(?), '$.bowl', json(?)) FROM Match)
+        WHERE ID = ?""",
+                   (str(stats_json['inning_1']['bat']),
+                    str(stats_json['inning_1']['bowl']),
+                    str(stats_json['inning_2']['bat']),
+                    str(stats_json['inning_2']['bowl']),
+                    match_id))
+
         # db.commit()
         db.close()
-
-    def __play_innings(self, second_innings: 'bool'):
-        for _ in range(self.__overs * 6):
-            result = self.__fake_engine.return_result()
-            self.__scoreboard.action(result)
-            if (self.__scoreboard.return_scorecard(2).return_batting(0) >
-                self.__scoreboard.return_scorecard(1).return_batting(0) or
-                self.__scoreboard.return_scorecard(2).wickets() == 10) or \
-                    (not second_innings and
-                     self.__scoreboard.return_scorecard(1).wickets() == 10):
-                break
 
     def __print_results(self):
         scorecard1, scorecard2 = self.__scoreboard.return_scorecard(1), \
                                  self.__scoreboard.return_scorecard(2)
-
-        if scorecard1.return_batting(0) > scorecard2.return_batting(0):
-            self.__manager1.update_manager_database(0)
-            self.__manager2.update_manager_database(1)
-        elif scorecard1.return_batting(0) < scorecard2.return_batting(0):
-            self.__manager1.update_manager_database(1)
-            self.__manager2.update_manager_database(0)
-        else:
-            self.__manager1.update_manager_database(2)
-            self.__manager2.update_manager_database(2)
 
         self.__print_scorecard_summary(scorecard1)
         self.__print_scorecard_summary(scorecard2)

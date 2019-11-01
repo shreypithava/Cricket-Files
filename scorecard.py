@@ -15,6 +15,11 @@ class ScoreCard(object):
         self.__people_at_crease = [1, 2]
         self.__ball_by_ball = list()
         self.__bowler_idx = 0
+        self.__set_batsman()
+
+    def __set_batsman(self):
+        self.__list_of_batting[self.__people_at_crease[0] - 1].came_to_bat()
+        self.__list_of_batting[self.__people_at_crease[1] - 1].came_to_bat()
 
     def get_list_of_batsman(self):
         return self.__list_of_batting
@@ -36,12 +41,12 @@ class ScoreCard(object):
         if runs >= 0:
             self.__zero_index_batsman = runs % 2 == self.__return_idx()
         else:
-            while True:
-                self.__people_at_crease[self.__return_idx()] += 1
-                if self.__people_at_crease[
-                    self.__return_idx()] > \
-                        self.__people_at_crease[self.__invert_return_idx()]:
-                    break
+            self.__people_at_crease[self.__return_idx()] = \
+                max(self.__people_at_crease) + 1
+            if max(self.__people_at_crease) != 12:
+                self.__list_of_batting[
+                    self.__people_at_crease[self.__return_idx()]
+                    - 1].came_to_bat()
         self.__check_if_over()
 
     def __return_idx(self):
@@ -59,12 +64,10 @@ class ScoreCard(object):
             self.__zero_index_batsman = not self.__zero_index_batsman
             temp = self.__bowler_idx
             # TODO: select bowler in future developments
-            while True:
+            while temp == self.__bowler_idx or \
+                    self.__list_of_bowling[self.__bowler_idx].get_bowl_stats(
+                    )[0] == 24:
                 self.__bowler_idx = randint(0, 10)
-                if temp != self.__bowler_idx and \
-                        self.__list_of_bowling[
-                            self.__bowler_idx].get_bowl_stats()[0] != 24:
-                    break
 
     def wickets(self) -> 'int':
         total_wickets = 0
