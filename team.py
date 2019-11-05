@@ -21,8 +21,7 @@ class Team(object):
     def get_players(self) -> 'list[Player]':
         return self.__players
 
-    def update_stats_in_database(self):
-        db = sqlite3.connect('database.db')
+    def update_stats_in_database(self, db: 'sqlite3.Connection'):
         for player in self.__players:
             bat_stats, bowl_stats = player.get_bat_stats(), \
                                     player.get_bowl_stats()
@@ -87,6 +86,3 @@ class Team(object):
                         bowl_set['4wi'], bowl_set['5wi'], match_set['matches'],
                         match_set['innings'], match_set['not_outs'],
                         player.get_id()))
-
-        # db.commit()
-        db.close()

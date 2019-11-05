@@ -15,9 +15,9 @@ class Manager(object):
     def get_id(self):
         return self.__id
 
-    def update_manager_and_player_database(self, result: 'int'):
+    def update_manager_and_player_database(self, result: 'int',
+                                           db: 'sqlite3.Connection'):
         query = 'SELECT * FROM Manager WHERE ID = {}'.format(self.__id)
-        db = sqlite3.connect('database.db')
         records = db.execute(query).fetchone()[1:]
 
         if result == 0:
@@ -30,6 +30,4 @@ class Manager(object):
             db.execute('UPDATE Manager SET Tie = ? WHERE ID = ?;',
                        (records[2] + 1, self.__id))
 
-        db.commit()
-        db.close()
-        self.__team.update_stats_in_database()
+        self.__team.update_stats_in_database(db)

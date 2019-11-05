@@ -97,34 +97,18 @@ class Personal(object):
 
 class Player(object):
     def __init__(self, record: 'tuple'):
-        self.__id = None
-        self.__personal = None  # Personal()
-        self.__batting = None  # Batting()
-        self.__bowling = None  # Bowling()
-        self.__fielding = None  # Fielding()
-        self.__setup(record)
+        self.__id = record[0]
+        self.__personal = Personal(record[1], json.loads(record[2])['matches'],
+                                   record[3], record[11])
+        self.__batting = Batting(json.loads(record[8])['bat_hand'],
+                                 json.loads(record[9])['bat'])
+        self.__bowling = Bowling(json.loads(record[8])['bowl_hand'],
+                                 json.loads(record[9])['bowl'])
+        self.__fielding = Fielding(json.loads(record[10])['agility'],
+                                   json.loads(record[10])['catching'])
 
     def get_id(self):
         return self.__id
-
-    def __setup(self, record):
-        self.__id = record[0]
-
-        name, xp, age, fitness = (record[1], json.loads(record[2])['matches'],
-                                  record[3], record[11])
-        self.__personal = Personal(name, xp, age, fitness)
-
-        hand, ability = (json.loads(record[8])['bat_hand'],
-                         json.loads(record[9])['bat'])
-        self.__batting = Batting(hand, ability)
-
-        hand, ability = (json.loads(record[8])['bowl_hand'],
-                         json.loads(record[9])['bowl'])
-        self.__bowling = Bowling(hand, ability)
-
-        agility, catching = (json.loads(record[10])['agility'],
-                             json.loads(record[10])['catching'])
-        self.__fielding = Fielding(agility, catching)
 
     def get_personal(self):
         return self.__personal

@@ -41,16 +41,6 @@ class Game(object):
         scorecard1, scorecard2 = (self.__scoreboard.return_scorecard(1),
                                   self.__scoreboard.return_scorecard(2))
 
-        if scorecard1.return_batting(0) > scorecard2.return_batting(0):
-            self.__manager1.update_manager_and_player_database(0)
-            self.__manager2.update_manager_and_player_database(1)
-        elif scorecard1.return_batting(0) < scorecard2.return_batting(0):
-            self.__manager1.update_manager_and_player_database(1)
-            self.__manager2.update_manager_and_player_database(0)
-        else:
-            self.__manager1.update_manager_and_player_database(2)
-            self.__manager2.update_manager_and_player_database(2)
-
         stats_json = {"inning_1": {"bat": list(), "bowl": list()},
                       "inning_2": {"bat": list(), "bowl": list()}}
 
@@ -69,25 +59,34 @@ class Game(object):
 
         db = sqlite3.connect('database.db')
         # PRAGMA foreign_keys = on;
-        db.execute("""INSERT INTO Match (ManagerID1, ManagerID2) VALUES (?, ?)
-        """, (self.__manager1.get_id(),
-              self.__manager2.get_id()))
+        db.execute("INSERT INTO Match (ManagerID1, ManagerID2) VALUES (?, ?)",
+                   (self.__manager1.get_id(),
+                    self.__manager2.get_id()))
 
-        match_id = db.execute("""SELECT count(*) FROM Match""").fetchone()[0]
+        match_id = db.execute("SELECT COUNT(*) FROM Match").fetchone()[0]
 
         db.execute("""UPDATE Match SET
         Inning_1 = (SELECT json_set(
         json(Inning_1), '$.bat', json(?), '$.bowl', json(?)) FROM Match),
         Inning_2 = (SELECT json_set(
         json(Inning_2), '$.bat', json(?), '$.bowl', json(?)) FROM Match)
-        WHERE ID = ?""",
-                   (str(stats_json['inning_1']['bat']),
-                    str(stats_json['inning_1']['bowl']),
-                    str(stats_json['inning_2']['bat']),
-                    str(stats_json['inning_2']['bowl']),
-                    match_id))
+        WHERE ID = ?""", (str(stats_json['inning_1']['bat']),
+                          str(stats_json['inning_1']['bowl']),
+                          str(stats_json['inning_2']['bat']),
+                          str(stats_json['inning_2']['bowl']),
+                          match_id))
 
-        # db.commit()
+        if scorecard1.return_batting(0) > scorecard2.return_batting(0):
+            self.__manager1.update_manager_and_player_database(0, db)
+            self.__manager2.update_manager_and_player_database(1, db)
+        elif scorecard1.return_batting(0) < scorecard2.return_batting(0):
+            self.__manager1.update_manager_and_player_database(1, db)
+            self.__manager2.update_manager_and_player_database(0, db)
+        else:
+            self.__manager1.update_manager_and_player_database(2, db)
+            self.__manager2.update_manager_and_player_database(2, db)
+
+        db.commit()
         db.close()
 
     def __print_results(self):
