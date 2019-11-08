@@ -12,7 +12,7 @@ class Game(object):
         self.__manager1 = Manager(id1)
         self.__manager2 = Manager(id2)
         self.__overs = 20
-        self.__fake_engine = FakeEngine()
+        self.__engine = FakeEngine()
         self.__scoreboard = ScoreBoard(self.__manager1.get_team(),
                                        self.__manager2.get_team())
 
@@ -24,13 +24,13 @@ class Game(object):
 
     def __play_innings(self, second_innings: 'bool'):
         for _ in range(self.__overs * 6):
-            result = self.__fake_engine.return_result()
+            result = self.__engine.return_result()
             self.__scoreboard.action(result)
-            if (self.__scoreboard.return_scorecard(2).return_batting(0) >
-                self.__scoreboard.return_scorecard(1).return_batting(0) or
-                self.__scoreboard.return_scorecard(2).wickets() == 10) or \
-                    (not second_innings and
-                     self.__scoreboard.return_scorecard(1).wickets() == 10):
+            if (self.__scoreboard.return_scorecard(2).get_runs_scored() >
+                self.__scoreboard.return_scorecard(1).get_runs_scored() or
+                self.__scoreboard.return_scorecard(2).is_all_out()) or (
+                    not second_innings and
+                    self.__scoreboard.return_scorecard(1).is_all_out()):
                 break
 
     def __post_match(self):
@@ -86,7 +86,7 @@ class Game(object):
             self.__manager1.update_manager_and_player_database(2, db)
             self.__manager2.update_manager_and_player_database(2, db)
 
-        db.commit()
+        # db.commit()
         db.close()
 
     def __print_results(self):

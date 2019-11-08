@@ -17,17 +17,19 @@ class Manager(object):
 
     def update_manager_and_player_database(self, result: 'int',
                                            db: 'sqlite3.Connection'):
+
         query = 'SELECT * FROM Manager WHERE ID = {}'.format(self.__id)
         records = db.execute(query).fetchone()[1:]
 
-        if result == 0:
-            db.execute('UPDATE Manager SET Win = ? WHERE ID = ?;',
-                       (records[0] + 1, self.__id))
-        elif result == 1:
-            db.execute('UPDATE Manager SET Loss = ? WHERE ID = ?;',
-                       (records[1] + 1, self.__id))
-        else:
-            db.execute('UPDATE Manager SET Tie = ? WHERE ID = ?;',
-                       (records[2] + 1, self.__id))
+        db.execute('UPDATE Manager SET {} = ? WHERE ID = ?'.format(
+            self.__text(result)), (records[result] + 1, self.__id))
 
         self.__team.update_stats_in_database(db)
+
+    @staticmethod
+    def __text(result: 'int') -> str:
+        if result == 0:
+            return 'Win'
+        elif result == 1:
+            return 'Loss'
+        return 'Tie'

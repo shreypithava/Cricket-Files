@@ -1,4 +1,4 @@
-from random import randint
+from random import choice
 
 from player import Player
 from team import Team
@@ -13,9 +13,18 @@ class ScoreCard(object):
         self.__innings = innings
         self.__zero_index_batsman = True
         self.__people_at_crease = [1, 2]
+        self.__runs_scored = 0
+        self.__total_wickets = 0
         self.__ball_by_ball = list()
-        self.__bowler_idx = 0
+        self.__bowlers_list = list(range(5, 11))
+        self.__bowler_idx = choice(self.__bowlers_list)
         self.__set_batsman()
+
+    def is_all_out(self) -> bool:
+        return self.__total_wickets == 10
+
+    def get_runs_scored(self) -> int:
+        return self.__runs_scored
 
     def __set_batsman(self):
         self.__list_of_batting[self.__people_at_crease[0] - 1].came_to_bat()
@@ -40,7 +49,9 @@ class ScoreCard(object):
 
         if runs >= 0:
             self.__zero_index_batsman = runs % 2 == self.__return_idx()
+            self.__runs_scored += runs
         else:
+            self.__total_wickets += 1
             self.__people_at_crease[self.__return_idx()] = \
                 max(self.__people_at_crease) + 1
             if max(self.__people_at_crease) != 12:
@@ -67,7 +78,7 @@ class ScoreCard(object):
             while temp == self.__bowler_idx or \
                     self.__list_of_bowling[self.__bowler_idx].get_bowl_stats(
                     )[0] == 24:
-                self.__bowler_idx = randint(0, 10)
+                self.__bowler_idx = choice(self.__bowlers_list)
 
     def wickets(self) -> 'int':
         total_wickets = 0
