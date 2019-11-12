@@ -98,9 +98,12 @@ class ScoreCard(object):
         for idx, batsman in enumerate(self.__list_of_batting):
             if self.wickets() + 2 == idx:
                 break
-            print('{}  {}({})'.format(batsman.get_name(),
-                                      batsman.get_bat_stats()[0],
-                                      batsman.get_bat_stats()[1]))
+            stats = batsman.get_bat_stats()
+            print('{}{} {}({})'.format(batsman.get_name(),
+                                       '¨' if stats[5] else '',
+                                       stats[0],
+                                       stats[1]))
+
         print("-" * 5 + "Bowling" + "-" * 5)
         for bowler in self.__list_of_bowling:
             bowl_stats = bowler.get_bowl_stats()

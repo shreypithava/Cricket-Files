@@ -15,6 +15,15 @@ class ScoreBoard(object):
     def action(self, runs: 'int'):
         self.__batting_team.action(runs)
 
+    def is_all_out(self, innings: 'int'):
+        if innings == 1:
+            return self.__one_scorecard.is_all_out()
+        return self.__two_scorecard.is_all_out()
+
+    def runs_chased(self):
+        return self.__two_scorecard.get_runs_scored() > \
+               self.__one_scorecard.get_runs_scored()
+
     def return_scorecard(self, innings: 'int') -> 'ScoreCard':
         if innings == 1:
             return self.__one_scorecard

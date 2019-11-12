@@ -26,18 +26,17 @@ class Game(object):
         for _ in range(self.__overs * 6):
             result = self.__engine.return_result()
             self.__scoreboard.action(result)
-            if (self.__scoreboard.return_scorecard(2).get_runs_scored() >
-                self.__scoreboard.return_scorecard(1).get_runs_scored() or
-                self.__scoreboard.return_scorecard(2).is_all_out()) or (
-                    not second_innings and
-                    self.__scoreboard.return_scorecard(1).is_all_out()):
+            if (self.__scoreboard.runs_chased() or
+                self.__scoreboard.is_all_out(2)) or \
+                    (not second_innings and
+                     self.__scoreboard.is_all_out(1)):
                 break
 
     def __post_match(self):
         self.__print_results()
-        self.__update_match_in_database()
+        self.__update_in_database()
 
-    def __update_match_in_database(self):
+    def __update_in_database(self):
         scorecard1, scorecard2 = (self.__scoreboard.return_scorecard(1),
                                   self.__scoreboard.return_scorecard(2))
 
@@ -76,7 +75,7 @@ class Game(object):
                           str(stats_json['inning_2']['bowl']),
                           match_id))
 
-        if scorecard1.return_batting(0) > scorecard2.return_batting(0):
+        if scorecard1.get_runs_scored() > scorecard2.get_runs_scored():
             self.__manager1.update_manager_and_player_database(0, db)
             self.__manager2.update_manager_and_player_database(1, db)
         elif scorecard1.return_batting(0) < scorecard2.return_batting(0):

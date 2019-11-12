@@ -80,11 +80,10 @@ class Team(object):
             '$.5wi', ?) FROM Player),
             Match_stats = (SELECT json_set(json(Match_stats), '$.matches', ?,
             '$.innings', ?, '$.not_outs', ?) From Player)
-            WHERE ID = ?""",
-                       (bat_set['runs'], bat_set['balls'], bat_set['4s'],
-                        bat_set['6s'], bat_set['50s'], bat_set['100s'],
-                        bowl_set['balls'], bowl_set['wickets'],
-                        bowl_set['maidens'], bowl_set['runs'],
-                        bowl_set['4wi'], bowl_set['5wi'], match_set['matches'],
-                        match_set['innings'], match_set['not_outs'],
-                        player.get_id()))
+            WHERE ID = ?""", (bat_set['runs'], bat_set['balls'], bat_set['4s'],
+                              bat_set['6s'], bat_set['50s'], bat_set['100s'],
+                              bowl_set['balls'], bowl_set['wickets'],
+                              bowl_set['maidens'], bowl_set['runs'],
+                              bowl_set['4wi'], bowl_set['5wi'],
+                              match_set['matches'], match_set['innings'],
+                              match_set['not_outs'], player.get_id()))
