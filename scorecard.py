@@ -26,6 +26,9 @@ class ScoreCard(object):
     def get_runs_scored(self) -> int:
         return self.__runs_scored
 
+    def wickets(self):
+        return self.__total_wickets
+
     def __set_batsman(self):
         self.__list_of_batting[self.__people_at_crease[0] - 1].came_to_bat()
         self.__list_of_batting[self.__people_at_crease[1] - 1].came_to_bat()
@@ -75,16 +78,10 @@ class ScoreCard(object):
             self.__zero_index_batsman = not self.__zero_index_batsman
             temp = self.__bowler_idx
             # TODO: select bowler in future developments
-            while temp == self.__bowler_idx or \
-                    self.__list_of_bowling[self.__bowler_idx].get_bowl_stats(
-                    )[0] == 24:
+            while (temp == self.__bowler_idx or
+                   self.__list_of_bowling[
+                       self.__bowler_idx].get_bowl_stats()[0] == 24):
                 self.__bowler_idx = choice(self.__bowlers_list)
-
-    def wickets(self) -> 'int':
-        total_wickets = 0
-        for player in self.__list_of_bowling:
-            total_wickets += player.get_bowl_stats()[3]
-        return total_wickets
 
     def return_batting(self, idx: 'int') -> 'int':
         # runs: 0, balls: 1, fours: 2, sixes: 3

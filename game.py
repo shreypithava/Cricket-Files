@@ -78,7 +78,7 @@ class Game(object):
         if scorecard1.get_runs_scored() > scorecard2.get_runs_scored():
             self.__manager1.update_manager_and_player_database(0, db)
             self.__manager2.update_manager_and_player_database(1, db)
-        elif scorecard1.return_batting(0) < scorecard2.return_batting(0):
+        elif scorecard1.get_runs_scored() < scorecard2.get_runs_scored():
             self.__manager1.update_manager_and_player_database(1, db)
             self.__manager2.update_manager_and_player_database(0, db)
         else:
