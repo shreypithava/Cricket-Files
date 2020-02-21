@@ -17,7 +17,6 @@ class Manager(object):
 
     def update_manager_and_player_database(self, result: 'int',
                                            db: 'sqlite3.Connection'):
-
         query = 'SELECT * FROM Manager WHERE ID = {}'.format(self.__id)
         records = db.execute(query).fetchone()[1:]
 
