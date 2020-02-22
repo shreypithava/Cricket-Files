@@ -1,5 +1,6 @@
 import sqlite3
 
+from database import Database
 from engine import FakeEngine
 from manager import Manager
 from scoreboard import ScoreBoard
@@ -9,8 +10,9 @@ from scorecard import ScoreCard
 class Game(object):
 
     def __init__(self, id1: 'int' = 1, id2: 'int' = 2):
-        self.__manager1 = Manager(id1)
-        self.__manager2 = Manager(id2)
+        self.__database = Database()
+        self.__manager1 = Manager(id1, self.__database.before_game(id1))
+        self.__manager2 = Manager(id2, self.__database.before_game(id2))
         self.__overs = 20
         self.__engine = FakeEngine()
         self.__scoreboard = ScoreBoard(self.__manager1.get_team(),

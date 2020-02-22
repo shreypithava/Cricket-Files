@@ -1,15 +1,13 @@
 import json
 import sqlite3
 
-from database import Database
 from player import Player
 
 
 class Team(object):
 
-    def __init__(self, team_id: 'int'):
-        self.__database = Database()
-        self.__players: 'list[Player]' = self.__database.before_game(team_id)
+    def __init__(self, players):
+        self.__players: 'list[Player]' = players
 
     def get_players(self) -> 'list[Player]':
         return self.__players
