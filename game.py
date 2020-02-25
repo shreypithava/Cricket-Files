@@ -28,8 +28,8 @@ class Game(object):
         for _ in range(self.__overs * 6):
             result = self.__engine.return_result()
             self.__scoreboard.action(result)
-            if (self.__scoreboard.runs_chased() or
-                self.__scoreboard.is_all_out(2)) or \
+            if self.__scoreboard.runs_chased() or \
+                    self.__scoreboard.is_all_out(2) or \
                     (not second_innings and
                      self.__scoreboard.is_all_out(1)):
                 break

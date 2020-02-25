@@ -20,8 +20,12 @@ class Database(object):
         return list_of_players
 
     def after_game(self):
+        self.__update_match()
         self.__update_managers()
         self.__update_players()
+
+    def __update_match(self):
+        pass
 
     def __update_players(self):
         pass
