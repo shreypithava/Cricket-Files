@@ -1,5 +1,3 @@
-import sqlite3
-
 from database import Database
 from engine import FakeEngine
 from manager import Manager
@@ -36,59 +34,20 @@ class Game(object):
 
     def __post_match(self):
         self.__print_results()
-        self.__update_in_database()
 
-    def __update_in_database(self):
-        scorecard1, scorecard2 = (self.__scoreboard.return_scorecard(1),
-                                  self.__scoreboard.return_scorecard(2))
+        result1, result2 = self.__get_result()
+        self.__database.after_game(self.__manager1,
+                                   self.__manager2,
+                                   result1, result2, self.__scoreboard)
 
-        stats_json = {"inning_1": {"bat": list(), "bowl": list()},
-                      "inning_2": {"bat": list(), "bowl": list()}}
-
-        for player in scorecard1.get_list_of_batsman():
-            person = [player.get_id(), player.get_bat_stats()[:2]]
-            stats_json['inning_1']['bat'].append(person)
-        for player in scorecard1.get_list_of_bowlers():
-            person = [player.get_id(), player.get_bowl_stats()]
-            stats_json['inning_1']['bowl'].append(person)
-        for player in scorecard2.get_list_of_batsman():
-            person = [player.get_id(), player.get_bat_stats()[:2]]
-            stats_json['inning_2']['bat'].append(person)
-        for player in scorecard2.get_list_of_bowlers():
-            person = [player.get_id(), player.get_bowl_stats()]
-            stats_json['inning_2']['bowl'].append(person)
-
-        db = sqlite3.connect('database.db')
-        # PRAGMA foreign_keys = on;
-        db.execute("INSERT INTO Match (ManagerID1, ManagerID2) VALUES (?, ?)",
-                   (self.__manager1.get_id(),
-                    self.__manager2.get_id()))
-
-        match_id = db.execute("SELECT COUNT(*) FROM Match").fetchone()[0]
-
-        db.execute("""UPDATE Match SET
-        Inning_1 = (SELECT json_set(
-        json(Inning_1), '$.bat', json(?), '$.bowl', json(?)) FROM Match),
-        Inning_2 = (SELECT json_set(
-        json(Inning_2), '$.bat', json(?), '$.bowl', json(?)) FROM Match)
-        WHERE ID = ?""", (str(stats_json['inning_1']['bat']),
-                          str(stats_json['inning_1']['bowl']),
-                          str(stats_json['inning_2']['bat']),
-                          str(stats_json['inning_2']['bowl']),
-                          match_id))
-
-        if scorecard1.get_runs_scored() > scorecard2.get_runs_scored():
-            self.__manager1.update_manager_and_player_database(0, db)
-            self.__manager2.update_manager_and_player_database(1, db)
-        elif scorecard1.get_runs_scored() < scorecard2.get_runs_scored():
-            self.__manager1.update_manager_and_player_database(1, db)
-            self.__manager2.update_manager_and_player_database(0, db)
-        else:
-            self.__manager1.update_manager_and_player_database(2, db)
-            self.__manager2.update_manager_and_player_database(2, db)
-
-        # db.commit()
-        db.close()
+    def __get_result(self):
+        if self.__scoreboard.return_scorecard(1).get_runs_scored() > \
+                self.__scoreboard.return_scorecard(2).get_runs_scored():
+            return 0, 1
+        if self.__scoreboard.return_scorecard(2).get_runs_scored() > \
+                self.__scoreboard.return_scorecard(1).get_runs_scored():
+            return 1, 0
+        return 2, 2
 
     def __print_results(self):
         scorecard1, scorecard2 = self.__scoreboard.return_scorecard(1), \
