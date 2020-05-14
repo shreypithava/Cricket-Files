@@ -15,7 +15,7 @@ class ScoreCard(object):
         self.__people_at_crease = [1, 2]
         self.__runs_scored = 0
         self.__total_wickets = 0
-        self.__ball_by_ball = list()
+        self.__ball_by_ball = []
         self.__bowlers_list = list(range(5, 11))
         self.__bowler_idx = choice(self.__bowlers_list)
         self.__set_batsman()

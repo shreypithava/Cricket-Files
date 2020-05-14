@@ -32,15 +32,16 @@ class Database(object):
 
         self.__update_players(manager1.get_team().get_players())
         self.__update_players(manager2.get_team().get_players())
-        # self.__db.commit()
+
+        self.__commit()
         self.__db.close()
 
     def __update_match(self, scoreboard: 'ScoreBoard', id1, id2):
         scorecard1, scorecard2 = (scoreboard.return_scorecard(1),
                                   scoreboard.return_scorecard(2))
 
-        stats_json = {"inning_1": {"bat": list(), "bowl": list()},
-                      "inning_2": {"bat": list(), "bowl": list()}}
+        stats_json = {"inning_1": {"bat": [], "bowl": []},
+                      "inning_2": {"bat": [], "bowl": []}}
 
         for player in scorecard1.get_list_of_batsman():
             person = [player.get_id(), player.get_bat_stats()[:2]]
@@ -149,6 +150,9 @@ class Database(object):
         records2 = self.__db.execute(query2).fetchone()[1:]
         self.__db.execute('UPDATE Manager SET {} = ? WHERE ID = ?'.format(
             self.__text(result2)), (records2[result2] + 1, id2))
+
+    def __commit(self):
+        self.__db.commit()
 
     @staticmethod
     def __text(result: 'int') -> str:
