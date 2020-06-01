@@ -1,3 +1,4 @@
+from file_of_enums import BatStats as baS, BowlStats as boS
 import json
 
 
@@ -31,18 +32,18 @@ class Batting(object):
         return self.__stats
 
     def came_out(self):
-        self.__stats[4] = True
+        self.__stats[baS.played.value] = True
 
     def update_stats(self, runs: 'int'):
         if runs >= 0:
-            self.__stats[0] += runs
+            self.__stats[baS.runs.value] += runs
             if runs == 4:
-                self.__stats[2] += 1
+                self.__stats[baS.fours.value] += 1
             elif runs == 6:
-                self.__stats[3] += 1
+                self.__stats[baS.six.value] += 1
         else:
-            self.__stats[5] = False
-        self.__stats[1] += 1
+            self.__stats[baS.not_out.value] = False
+        self.__stats[baS.balls.value] += 1
 
 
 class Bowling(object):
@@ -68,10 +69,10 @@ class Bowling(object):
 
     def update_stats(self, result: 'int'):
         if result == -1:
-            self.__stats[3] += 1
+            self.__stats[boS.wickets.value] += 1
         else:
-            self.__stats[2] += result
-        self.__stats[0] += 1
+            self.__stats[boS.runs.value] += result
+        self.__stats[boS.balls.value] += 1
 
 
 class Personal(object):
