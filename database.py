@@ -152,7 +152,8 @@ class Database(object):
             self.__text(result2)), (records2[result2] + 1, id2))
 
     def __commit(self):
-        self.__db.commit()
+        # self.__db.commit()
+        pass
 
     @staticmethod
     def __text(result: 'int') -> str:

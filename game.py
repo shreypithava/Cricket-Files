@@ -1,5 +1,5 @@
 from database import Database
-from engine import FakeEngine
+from engine import Engine
 from manager import Manager
 from scoreboard import ScoreBoard
 from scorecard import ScoreCard
@@ -12,7 +12,7 @@ class Game(object):
         self.__manager1 = Manager(id1, self.__database.before_game(id1))
         self.__manager2 = Manager(id2, self.__database.before_game(id2))
         self.__overs = 20
-        self.__engine = FakeEngine()
+        self.__engine = Engine()
         self.__scoreboard = ScoreBoard(self.__manager1.get_team(),
                                        self.__manager2.get_team())
 
@@ -24,7 +24,7 @@ class Game(object):
 
     def __play_innings(self, second_innings: 'bool'):
         for _ in range(self.__overs * 6):
-            result = self.__engine.return_result()
+            result = self.__engine.return_result(10)  # TODO: start here
             self.__scoreboard.action(result)
             if self.__scoreboard.runs_chased() or \
                     self.__scoreboard.is_all_out(2) or \
